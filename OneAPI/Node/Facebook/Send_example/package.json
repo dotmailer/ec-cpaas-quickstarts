@@ -1,0 +1,30 @@
+{
+  "name": "ec-cpaas-send-to-facebook-tutorial-nodejs",
+  "version": "1.0.0",
+  "description": "Tutorial to demonstrate how to send to Facebook with Engagement Cloud CPaaS API using Node.js",
+  "main": "send.js",
+  "scripts": {
+    "test": "node send.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dotmailer/ec-cpaas-quickstarts.git"
+  },
+  "keywords": [
+    "dotdigital",
+    "engagement cloud"
+    "facebook",
+    "messenger",
+    "send",
+    "message"
+  ],
+  "author": "Dave Baddeley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dotmailer/ec-cpaas-quickstarts/issues"
+  },
+  "homepage": "https://github.com/dotmailer/ec-cpaas-quickstarts#readme",
+  "dependencies": {
+    "request": "^2.88.2"
+  }
+}

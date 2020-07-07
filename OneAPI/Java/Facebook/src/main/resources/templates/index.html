@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Engagement Cloud CPaaS Facebook Opt-in tutorial</title>
+    <link rel="shortcut icon" href="/images/favicon.ico?" type="image/x-icon" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/toastr.min.css" />
+    <script src="/scripts/jquery-2.2.4.min.js"></script>
+    <script language="Javascript" src="/scripts/toastr.min.js"></script>
+
+    <!-- Facebook Send to Messenger standard code to include in the head of the page -->
+    <script lang="Javascript">
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: "336037380081042",
+                xfbml: true,
+                version: "v2.6"
+            });
+
+            FB.Event.subscribe('send_to_messenger', function (e) {
+                // callback for events triggered by the Facebook plugin
+                if (e.event == "opt_in") {
+                    // Send to Messenger clicked render test buttons
+                    $("#testButtons").show();
+                }
+            });
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+</head>
+
+<body class="container">
+    <header>
+        <h1>Facebook Opt-in Page</h1>
+    </header>
+
+    <main>
+        <p>
+            You will need to add the Facebook <a
+                href="//developers.facebook.com/docs/messenger-platform/plugin-reference/send-to-messenger"
+                target="_blank"><b>Send to Messenger</b></a> web plugin to your website to get permission to send the
+            user messages
+            via Facebook. This would usually be on your check out page etc...
+        </p>
+
+        <hr>
+
+        <p>
+            Click below to receive updates via Facebook Messenger for <b th:inline="text">[[${profileId}]]</b>
+        </p>
+
+        <!-- The data-ref field will be populated with the metadata returned from Engagement Cloud CPaaS's Facebook webservice', add your own Facebook page_id -->
+        <div class="fb-send-to-messenger" messenger_app_id="336037380081042"
+            th:attr="page_id=${facebookPageId},data-ref=${metadata}" color="blue" size="large">
+        </div>
+
+        <hr>
+        <p>
+            When it is clicked a unique Facebook Messenger Id will be created for the customer and your page and automatically sent to
+            Engagement Cloud CPaaS where a <b>fbMessengerId</b> field will be added to the profile (<b th:inline="text">[[${profileId}]]</b>) 
+            which was encoded in the secure metadata passed in the <b>data-ref</b> field on the Send to Messenger control
+        </p>
+        <div id="testButtons" th:if="${testButtonsDisplay}">
+            <hr>
+            <p>Use the test buttons below to send test messages to Facebook</p>
+            <form id="buttonForm" method="POST">
+                <button name="messageType" value="SimpleTest">Send Simple Test Message</button>
+                <button name="messageType" value="RichTest">Send Rich Test Message</button>
+            </form>
+            <hr>
+        </div>
+
+        <script language="Javascript" th:if="${feedback}" th:inline="javascript">
+            // Setup Toastr
+            toastr.options.closeButton = true;
+            toastr.options.closeMethod = 'fadeOut';
+            toastr.options.closeDuration = 300;
+            toastr.options.closeEasing = 'swing';
+            toastr.options.progressBar = true;
+
+            if ('[[${feedback.getSucceeded()}]]' == 'true') {
+                toastr.success([[${feedback.getMessage()}]], "Test message sent");
+            } else {
+                toastr.error([[${feedback.getMessage()}]], "Test message failed");
+            }
+        </script>
+
+    </main>
+
+</body>
+
+</html>
