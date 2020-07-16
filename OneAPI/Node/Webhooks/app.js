@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 // Register routes
-var index = require('./routes/webhook'); // Bring in the webhook route
+var webhookRouter = require('./routes/webhook'); // Bring in the webhook route
 
 var app = express();
 
@@ -32,7 +32,7 @@ app.use(cookieParser());
 // Register paths and routes
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
+app.use('/', webhookRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

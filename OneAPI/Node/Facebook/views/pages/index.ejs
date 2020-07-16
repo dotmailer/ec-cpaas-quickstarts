@@ -14,6 +14,14 @@
                 xfbml: true,
                 version: "v2.6"
             });
+
+            FB.Event.subscribe('send_to_messenger', function (e) {
+                // callback for events triggered by the Facebook plugin
+                if (e.event == "opt_in") {
+                    // Send to Messenger clicked render test buttons
+                    $("#testButtons").show();
+                }
+            });
         };
 
         (function (d, s, id) {
@@ -41,7 +49,7 @@
         <hr>
 
         <p>
-            Click below to recieve updates via Facebook Messenger for the profile <b><%= profileId %></b>
+            Click below to receive updates via Facebook Messenger for the profile <b><%= profileId %></b>
         </p>
 
         <!-- The data-ref field will be populated with the metadata returned from Engagement Cloud CPaaS's Facebook webservice', add your own Facebook page_id -->
@@ -60,6 +68,34 @@
             field on the Send to Messenger control. You can now move onto the Facebook Messenger send message quick starts and send messages
             to the opted in profile <b><%= profileId %></b>
         </p>
+
+        <div id="testButtons" style="display: <%= testButtonsDisplay %>">
+            <hr>
+            <p>Use the test buttons below to send test messages to Facebook</p>
+            <form id="buttonForm" method="POST">
+                <button name="SendMessage" value="Simple">Send Simple Test Message</button>
+                <button name="SendMessage" value="Rich">Send Rich Test Message</button>
+            </form>
+            <hr>
+        </div>
+
+        <!-- Test message feedback toast -->
+        <% if (feedback) { %>
+        <script language="Javascript">
+            // Setup Toastr
+            toastr.options.closeButton = true;
+            toastr.options.closeMethod = 'fadeOut';
+            toastr.options.closeDuration = 300;
+            toastr.options.closeEasing = 'swing';
+            toastr.options.progressBar = true;
+
+            <% if (feedback.succeeded) { %> 
+                toastr.success("<%= feedback.message %>", "Success");
+            <% } else { %>
+                toastr.error("<%= feedback.message %>", "Failed");
+            <% } %>
+        </script>
+        <% } %>
     </main>
 
 </body>
