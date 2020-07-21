@@ -16,7 +16,7 @@ conn = http.client.HTTPSConnection("api-cpaas.dotdigital.com")
 # Create the basic auth header encoded username and password
 userAndPass = b64encode(bytes(API_USERNAME + ":" + API_PASSWORD, "ascii")).decode("ascii")
 
-# Construct the Comapi API request
+# Construct the Engagement Cloud CPaaS API request
 myRequest = {
     "to": {
         "phoneNumber": "447123123123"
