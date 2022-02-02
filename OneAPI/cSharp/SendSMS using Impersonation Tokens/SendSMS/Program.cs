@@ -10,6 +10,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SendSMS
 {
@@ -29,7 +30,7 @@ namespace SendSMS
         private const string MOBILE_NUMBER = "447123123123";
         private const int BATCH_SIZE = 3;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             try
             {
@@ -125,14 +126,21 @@ namespace SendSMS
             Console.ReadLine();
         }
 
-        private static void SendSMS(SMSSendRequest smsRequest)
+        private async static void SendSMS(SMSSendRequest smsRequest)
         {
             // Setup a REST client object using the message send URL with our API Space incorporated
-            var client = new RestClient(string.Format("https://api.comapi.com/apispaces/{0}/messages", CUSTOMER_APISPACE));
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("cache-control", "no-cache");
-            request.AddHeader("content-type", "application/json");
-            request.AddHeader("accept", "application/json");
+            var options = new RestClientOptions(string.Format("https://api.comapi.com/apispaces/{0}/messages", CUSTOMER_APISPACE))
+            {
+                ThrowOnAnyError = false,
+                Timeout = 30000
+            };
+
+            var client = new RestClient(options);
+            client.AddDefaultHeader("Content-Type", "application/json");
+            client.AddDefaultHeader("Accept", "application/json");
+
+            var request = new RestRequest();
+            request.AddHeader("Cache-Control", "no-cache");
             request.AddHeader("authorization", "Bearer " + 
                 CreateImpersonationToken(
                     CUSTOMER_ACCOUNT_ID, 
@@ -145,12 +153,12 @@ namespace SendSMS
             request.AddParameter("application/json", requestJson, ParameterType.RequestBody);
 
             // Make the web service call
-            IRestResponse response = client.Execute(request);
+            var response = await client.ExecutePostAsync(request);
 
             if (response.StatusCode != System.Net.HttpStatusCode.Created)
             {
                 // Something went wrong.
-                throw new InvalidOperationException(string.Format("Call to Comapi failed with status code ({0}), and body: {1}", response.StatusCode, response.Content));
+                throw new InvalidOperationException(string.Format("Call to Dotdigital Eneterprise Communications API failed with status code ({0}), and body: {1}", response.StatusCode, response.Content));
             }
             else
             {
@@ -161,14 +169,21 @@ namespace SendSMS
             }
         }
 
-        private static void SendSMSBatch(SMSSendRequest[] smsRequests)
+        private async static void SendSMSBatch(SMSSendRequest[] smsRequests)
         {
             // Setup a REST client object using the message send URL with our API Space incorporated
-            var client = new RestClient(string.Format("https://api.comapi.com/apispaces/{0}/messages/batch", CUSTOMER_APISPACE));
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("cache-control", "no-cache");
-            request.AddHeader("content-type", "application/json");
-            request.AddHeader("accept", "application/json");
+            var options = new RestClientOptions(string.Format("https://api.comapi.com/apispaces/{0}/messages/batch", CUSTOMER_APISPACE))
+            {
+                ThrowOnAnyError = false,
+                Timeout = 30000
+            };
+
+            var client = new RestClient(options);
+            client.AddDefaultHeader("Content-Type", "application/json");
+            client.AddDefaultHeader("Accept", "application/json");
+
+            var request = new RestRequest();
+            request.AddHeader("Cache-Control", "no-cache");
             request.AddHeader("authorization", "Bearer " + 
                 CreateImpersonationToken(
                 CUSTOMER_ACCOUNT_ID, 
@@ -181,12 +196,12 @@ namespace SendSMS
             request.AddParameter("application/json", requestJson, ParameterType.RequestBody);
 
             // Make the web service call
-            IRestResponse response = client.Execute(request);
+            var response = await client.ExecutePostAsync(request);
 
             if (response.StatusCode != System.Net.HttpStatusCode.Accepted)
             {
                 // Something went wrong.
-                throw new InvalidOperationException(string.Format("Call to Comapi failed with status code ({0}), and body: {1}", response.StatusCode, response.Content));
+                throw new InvalidOperationException(string.Format("Call to Dotdigital Enterprise Communications API failed with status code ({0}), and body: {1}", response.StatusCode, response.Content));
             }
             else
             {
@@ -295,7 +310,7 @@ namespace SendSMS
             public channelOptionsStruct? channelOptions { get; set; }
 
             /// <summary>
-            /// The Comapi API channel rules
+            /// The Dotdigital Enterprise Communications API API channel rules
             /// </summary>
             public string[] rules { get; set; }
         }
