@@ -14,9 +14,6 @@
     "doctrine/lexer": {
         "version": "1.2.1"
     },
-    "php": {
-        "version": "7.4"
-    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -181,9 +178,6 @@
             "./config/packages/twig.yaml",
             "./templates/base.html.twig"
         ]
-    },
-    "symfony/twig-pack": {
-        "version": "v1.0.0"
     },
     "symfony/var-dumper": {
         "version": "v5.1.11"
